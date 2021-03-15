@@ -1,4 +1,4 @@
-module github.com/bbnote/gostlink
+module github.com/juju2013/gostlink
 
 go 1.14
 
