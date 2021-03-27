@@ -156,10 +156,10 @@ const (
 // ST-Link debug commands
 const (
 	//debugEnterJTag          = 0x00
-	//debugGetStatus          = 0x01
+	debugGetStatus          = 0x01
 	//debugForceDebug         = 0x02
-	//debugApiV1ResetSys      = 0x03
-	//debugApiV1ReadAllRegs   = 0x04
+	debugApiV1ResetSys      = 0x03
+	debugApiV1ReadAllRegs   = 0x04
 	//debugApiV1ReadReg       = 0x05
 	//debugApiV1WriteReg      = 0x06
 	debugReadMem32Bit  = 0x07
@@ -177,12 +177,12 @@ const (
 	debugReadCoreId       = 0x22
 	debugApiV2Enter       = 0x30
 	debugApiV2ReadIdCodes = 0x31
-	//debugApiV2ResetSys      = 0x32
-	//debugApiV2ReadReg       = 0x33
-	//debugApiV2WriteReg      = 0x34
-	//debugApiV2WriteDebugReg = 0x35
-	//debugApiV2ReadDebugReg  = 0x36
-	//debugApiV2ReadAllRegs                = 0x3A
+	debugApiV2ResetSys      = 0x32
+	debugApiV2ReadReg       = 0x33
+	debugApiV2WriteReg      = 0x34
+	debugApiV2WriteDebugReg = 0x35
+	debugApiV2ReadDebugReg  = 0x36
+	debugApiV2ReadAllRegs                = 0x3A
 	debugApiV2GetLastRWStatus  = 0x3B
 	debugApiV2DriveNrst        = 0x3C
 	debugApiV2GetLastRWStatus2 = 0x3E

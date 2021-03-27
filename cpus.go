@@ -8,7 +8,9 @@
 // https://sourceforge.net/p/openocd/code
 
 package gostlink
-
+import (
+  "strings"
+)
 type StmCpuInfo struct {
 	RamStart uint64
 	RamSize  uint64
@@ -27,10 +29,11 @@ var supportedStmCpus = map[string]StmCpuInfo{
 	"STM32F070C6": {0x20000000, 0x2000},
 	"STM32F070CB": {0x20000000, 0x4000},
 	"STM32F070RB": {0x20000000, 0x4000},
+	"STM32F103"  : {0x20000000, 0x5000},
 }
 
 func GetCpuInformation(cpuId string) *StmCpuInfo {
-	if val, ok := supportedStmCpus[cpuId]; ok {
+	if val, ok := supportedStmCpus[strings.ToUpper(cpuId)]; ok {
 		return &val
 	} else {
 		return nil
