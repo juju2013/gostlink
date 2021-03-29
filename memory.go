@@ -9,7 +9,7 @@ import (
 	"fmt"
 )
 
-func (h *StLink) usbReadMem8(addr uint32, len uint16, buffer *bytes.Buffer) error {
+func (h *StLink) UsbReadMem8(addr uint32, len uint16, buffer *bytes.Buffer) error {
 	var readLen = uint32(len)
 
 	/* max 8 bit read/write is 64 bytes or 512 bytes for v3 */
@@ -43,7 +43,7 @@ func (h *StLink) usbReadMem8(addr uint32, len uint16, buffer *bytes.Buffer) erro
 }
 
 /** */
-func (h *StLink) usbReadMem16(addr uint32, len uint16, buffer *bytes.Buffer) error {
+func (h *StLink) UsbReadMem16(addr uint32, len uint16, buffer *bytes.Buffer) error {
 	if !h.version.flags.Get(flagHasMem16Bit) {
 		return newUsbError("Read16 command not supported by device", usbErrorCommandNotFound)
 	}
@@ -72,7 +72,7 @@ func (h *StLink) usbReadMem16(addr uint32, len uint16, buffer *bytes.Buffer) err
 	return h.usbGetReadWriteStatus()
 }
 
-func (h *StLink) usbReadMem32(addr uint32, len uint16, buffer *bytes.Buffer) error {
+func (h *StLink) UsbReadMem32(addr uint32, len uint16, buffer *bytes.Buffer) error {
 
 	/* data must be a multiple of 4 and word aligned */
 	if ((len % 4) > 0) || ((addr % 4) > 0) {
@@ -98,7 +98,7 @@ func (h *StLink) usbReadMem32(addr uint32, len uint16, buffer *bytes.Buffer) err
 	return h.usbGetReadWriteStatus()
 }
 
-func (h *StLink) usbWriteMem8(addr uint32, len uint16, buffer []byte) error {
+func (h *StLink) UsbWriteMem8(addr uint32, len uint16, buffer []byte) error {
 	writeLen := uint32(len)
 
 	if writeLen > h.usbBlock() {
@@ -124,7 +124,7 @@ func (h *StLink) usbWriteMem8(addr uint32, len uint16, buffer []byte) error {
 	return h.usbGetReadWriteStatus()
 }
 
-func (h *StLink) usbWriteMem16(addr uint32, len uint16, buffer []byte) error {
+func (h *StLink) UsbWriteMem16(addr uint32, len uint16, buffer []byte) error {
 	writeLen := uint32(len)
 
 	if !h.version.flags.Get(flagHasMem16Bit) {
@@ -155,7 +155,7 @@ func (h *StLink) usbWriteMem16(addr uint32, len uint16, buffer []byte) error {
 	return h.usbGetReadWriteStatus()
 }
 
-func (h *StLink) usbWriteMem32(addr uint32, len uint16, buffer []byte) error {
+func (h *StLink) UsbWriteMem32(addr uint32, len uint16, buffer []byte) error {
 	writeLen := uint32(len)
 
 	/* data must be a multiple of 4 and word aligned */

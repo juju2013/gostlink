@@ -257,7 +257,7 @@ func NewStLink(config *StLinkInterfaceConfig) (*StLink, error) {
 	}
 
 	buffer := bytes.NewBuffer([]byte{})
-	errCode := handle.usbReadMem32(cpuIdBaseRegister, 4, buffer)
+	errCode := handle.UsbReadMem32(cpuIdBaseRegister, 4, buffer)
 
 	if errCode == nil {
 		var cpuid uint32 = convertToUint32(buffer.Bytes(), littleEndian)
@@ -467,7 +467,7 @@ func (h *StLink) ReadMem(addr uint32, bitLength MemoryBlockSize, count uint32, b
 
 				logger.Trace("read unaligned bytes")
 
-				err := h.usbReadMem8(addr, uint16(headBytes), buffer)
+				err := h.UsbReadMem8(addr, uint16(headBytes), buffer)
 
 				if err != nil {
 					usbError := err.(*usbError)
@@ -494,12 +494,12 @@ func (h *StLink) ReadMem(addr uint32, bitLength MemoryBlockSize, count uint32, b
 			if (bytesRemaining & (uint32(bitLength) - 1)) > 0 {
 				retErr = h.ReadMem(addr, 1, bytesRemaining, buffer)
 			} else if bitLength == Memory16BitBlock {
-				retErr = h.usbReadMem16(addr, uint16(bytesRemaining), buffer)
+				retErr = h.UsbReadMem16(addr, uint16(bytesRemaining), buffer)
 			} else {
-				retErr = h.usbReadMem32(addr, uint16(bytesRemaining), buffer)
+				retErr = h.UsbReadMem32(addr, uint16(bytesRemaining), buffer)
 			}
 		} else {
-			retErr = h.usbReadMem8(addr, uint16(bytesRemaining), buffer)
+			retErr = h.UsbReadMem8(addr, uint16(bytesRemaining), buffer)
 		}
 
 		if retErr != nil {
@@ -568,7 +568,7 @@ func (h *StLink) WriteMem(address uint32, bitLength MemoryBlockSize, count uint3
 			if (address & (uint32(bitLength) - 1)) > 0 {
 				var headBytes = uint32(bitLength) - (address & (uint32(bitLength) - 1))
 
-				err := h.usbWriteMem8(address, uint16(headBytes), buffer)
+				err := h.UsbWriteMem8(address, uint16(headBytes), buffer)
 
 				if err != nil {
 					usbError := err.(*usbError)
@@ -595,12 +595,12 @@ func (h *StLink) WriteMem(address uint32, bitLength MemoryBlockSize, count uint3
 			if (bytesRemaining & (uint32(bitLength) - 1)) > 0 {
 				retError = h.WriteMem(address, 1, bytesRemaining, buffer[bufferPos:])
 			} else if bitLength == Memory16BitBlock {
-				retError = h.usbWriteMem16(address, uint16(bytesRemaining), buffer[bufferPos:])
+				retError = h.UsbWriteMem16(address, uint16(bytesRemaining), buffer[bufferPos:])
 			} else {
-				retError = h.usbWriteMem32(address, uint16(bytesRemaining), buffer[bufferPos:])
+				retError = h.UsbWriteMem32(address, uint16(bytesRemaining), buffer[bufferPos:])
 			}
 		} else {
-			retError = h.usbWriteMem8(address, uint16(bytesRemaining), buffer)
+			retError = h.UsbWriteMem8(address, uint16(bytesRemaining), buffer)
 		}
 
 		if retError != nil {
