@@ -9,7 +9,7 @@ import (
 )
 
 /** */
-func (h *StLink) usbModeEnter(stMode StLinkMode) error {
+func (h *StLink) UsbModeEnter(stMode StLinkMode) error {
 	var rxSize uint32 = 0
 	/* on api V2 we are able the read the latest command
 	 * status
@@ -59,7 +59,7 @@ func (h *StLink) usbModeEnter(stMode StLinkMode) error {
 	return h.usbCmdAllowRetry(ctx, rxSize)
 }
 
-func (h *StLink) usbCurrentMode() (byte, error) {
+func (h *StLink) UsbCurrentMode() (byte, error) {
 
 	ctx := h.initTransfer(transferIncoming)
 
@@ -74,9 +74,9 @@ func (h *StLink) usbCurrentMode() (byte, error) {
 	}
 }
 
-func (h *StLink) usbInitMode(connectUnderReset bool, initialInterfaceSpeed uint32) error {
+func (h *StLink) UsbInitMode(connectUnderReset bool, initialInterfaceSpeed uint32) error {
 
-	mode, err := h.usbCurrentMode()
+	mode, err := h.UsbCurrentMode()
 
 	if err != nil {
 		logger.Error("could not get usb mode")
@@ -108,12 +108,12 @@ func (h *StLink) usbInitMode(connectUnderReset bool, initialInterfaceSpeed uint3
 	}
 
 	if stLinkMode != StLinkModeUnknown {
-		if err = h.usbLeaveMode(stLinkMode); err != nil {
+		if err = h.UsbLeaveMode(stLinkMode); err != nil {
 			logger.Warn("error occured while trying to leave mode: ", err)
 		}
 	}
 
-	mode, err = h.usbCurrentMode()
+	mode, err = h.UsbCurrentMode()
 
 	if err != nil {
 		logger.Error("could not get usb mode")
@@ -183,7 +183,7 @@ func (h *StLink) usbInitMode(connectUnderReset bool, initialInterfaceSpeed uint3
 	}
 
 	logger.Tracef("Entering usb mode %d", stLinkMode)
-	err = h.usbModeEnter(stLinkMode)
+	err = h.UsbModeEnter(stLinkMode)
 
 	if err != nil {
 		return err
@@ -197,7 +197,7 @@ func (h *StLink) usbInitMode(connectUnderReset bool, initialInterfaceSpeed uint3
 		}
 	}
 
-	mode, err = h.usbCurrentMode()
+	mode, err = h.UsbCurrentMode()
 
 	if err != nil {
 		return err
@@ -208,7 +208,7 @@ func (h *StLink) usbInitMode(connectUnderReset bool, initialInterfaceSpeed uint3
 	return nil
 }
 
-func (h *StLink) usbLeaveMode(mode StLinkMode) error {
+func (h *StLink) UsbLeaveMode(mode StLinkMode) error {
 	ctx := h.initTransfer(transferIncoming)
 
 	switch mode {
