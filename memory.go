@@ -9,6 +9,7 @@ import (
 	"fmt"
 )
 
+// Read (len * 1) bytes from Target's memory
 func (h *StLink) UsbReadMem8(addr uint32, len uint16, buffer *bytes.Buffer) error {
 	var readLen = uint32(len)
 
@@ -42,7 +43,7 @@ func (h *StLink) UsbReadMem8(addr uint32, len uint16, buffer *bytes.Buffer) erro
 	return h.usbGetReadWriteStatus()
 }
 
-/** */
+// Read ((len/2) * 2) bytes from Target's memory, addr must be 16bit aligned
 func (h *StLink) UsbReadMem16(addr uint32, len uint16, buffer *bytes.Buffer) error {
 	if !h.version.flags.Get(flagHasMem16Bit) {
 		return newUsbError("Read16 command not supported by device", usbErrorCommandNotFound)
@@ -72,6 +73,7 @@ func (h *StLink) UsbReadMem16(addr uint32, len uint16, buffer *bytes.Buffer) err
 	return h.usbGetReadWriteStatus()
 }
 
+// Read ((len/4) * 4) bytes from Target's memory, addr must be 32bit aligned
 func (h *StLink) UsbReadMem32(addr uint32, len uint16, buffer *bytes.Buffer) error {
 
 	/* data must be a multiple of 4 and word aligned */
@@ -96,6 +98,36 @@ func (h *StLink) UsbReadMem32(addr uint32, len uint16, buffer *bytes.Buffer) err
 	buffer.Write(ctx.DataBytes())
 
 	return h.usbGetReadWriteStatus()
+}
+
+// Read len bytes from Target's memory, NO aligment needed for add and len 
+func (h *StLink) UsbReadMem(addr uint32, len uint16, buffer *bytes.Buffer) error {
+
+  // Read 8 bits until we get a 32bit aligned addr
+  prelen := uint16(addr % 4)
+  if (prelen > 0) {
+    prelen = 4 - prelen
+    if err := h.UsbReadMem8(addr, prelen, buffer); err != nil {
+      return err
+    }
+  }
+  
+  // Read as many 32bit as needed
+  w32len := uint16((len - prelen) / 4)*4
+  if (w32len > 0) {
+    if err := h.UsbReadMem32((addr+uint32(prelen)), w32len, buffer); err !=nil {
+        return err
+    } 
+  }
+  
+  // Read remaining bytes by 8bit's Read
+  postlen := len - w32len - prelen
+  if (postlen > 0) {
+    if err := h.UsbReadMem8(addr+uint32(prelen+w32len), postlen, buffer); err != nil {
+      return err
+    }
+  }
+  return nil
 }
 
 func (h *StLink) UsbWriteMem8(addr uint32, len uint16, buffer []byte) error {
