@@ -157,7 +157,7 @@ const (
 const (
 	//debugEnterJTag          = 0x00
 	debugGetStatus          = 0x01
-	//debugForceDebug         = 0x02
+	debugForceDebug         = 0x02
 	debugApiV1ResetSys      = 0x03
 	debugApiV1ReadAllRegs   = 0x04
 	//debugApiV1ReadReg       = 0x05

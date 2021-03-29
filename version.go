@@ -30,8 +30,8 @@ func (h *StLink) useParseVersion() error {
 	x = byte((version >> 6) & 0x3f)
 	y = byte(version & 0x3f)
 
-	h.vid = gousb.ID(convertToUint16(ctx.DataBytes()[2:], littleEndian))
-	h.pid = gousb.ID(convertToUint16(ctx.DataBytes()[4:], littleEndian))
+	h.vid = gousb.ID(ctx.dataBuf.ReadUint16LE())
+	h.pid = gousb.ID(ctx.dataBuf.ReadUint16BE())
 
 	switch h.pid {
 	case stLinkV21Pid, stLinkV21NoMsdPid:
@@ -63,13 +63,14 @@ func (h *StLink) useParseVersion() error {
 			return err
 		}
 
-		v = ctxV3.DataBytes()[0]
-		swim = ctxV3.DataBytes()[1]
-		jtag = ctxV3.DataBytes()[2]
-		msd = ctxV3.DataBytes()[3]
-		bridge = ctxV3.DataBytes()[4]
-		h.vid = gousb.ID(convertToUint16(ctxV3.DataBytes()[8:], littleEndian))
-		h.pid = gousb.ID(convertToUint16(ctxV3.DataBytes()[10:], littleEndian))
+		v       = ctxV3.dataBuf.Next(1)[0]
+		swim    = ctxV3.dataBuf.Next(1)[0]
+		jtag    = ctxV3.dataBuf.Next(1)[0]
+		msd     = ctxV3.dataBuf.Next(1)[0]
+		bridge  = ctxV3.dataBuf.Next(1)[0]
+    ctxV3.dataBuf.Next(3)
+		h.vid = gousb.ID(ctxV3.dataBuf.ReadUint16LE())
+		h.pid = gousb.ID(ctxV3.dataBuf.ReadUint16LE())
 	}
 
 	h.version.stlink = int(v)

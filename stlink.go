@@ -228,7 +228,7 @@ func NewStLink(config *StLinkInterfaceConfig) (*StLink, error) {
 		return nil, errors.New("unknown ST-Link mode")
 	}
 
-	err = handle.usbInitMode(config.connectUnderReset, config.initialSpeed)
+	err = handle.UsbInitMode(config.connectUnderReset, config.initialSpeed)
 
 	if err != nil {
 		return nil, err
@@ -665,6 +665,21 @@ func (h *StLink) PollTrace(buffer []byte, size *uint32) error {
 	}
 
 	*size = 0
+	return nil
+}
+
+// Force the target go to debug mode
+func (h *StLink) ForceDebug() error {
+
+  ctx := h.initTransfer(transferOutgoing)
+  ctx.cmdBuf.WriteByte(cmdDebug)
+  ctx.cmdBuf.WriteByte(debugForceDebug)
+
+  err := h.usbTransferNoErrCheck(ctx, 0)
+  if err != nil {
+    return err
+  }
+
 	return nil
 }
 

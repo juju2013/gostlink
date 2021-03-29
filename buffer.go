@@ -7,6 +7,7 @@ package gostlink
 import (
 	"bytes"
 	"math"
+  _ "runtime/debug"
 )
 
 type Buffer struct {
@@ -48,20 +49,28 @@ func (buf *Buffer) WriteUint16LE(value uint16) {
 	buf.WriteByte(byte(value >> 8))
 }
 
+// Read next 2 bytes as unsigned integer Big Endian
+// !!! This differe from original source which buffer pointer is not advenced (ie. doest not Read from Buffer)
 func (buf *Buffer) ReadUint16BE() uint16 {
-	return convertToUint16(buf.Bytes(), bigEndian)
+	return convertToUint16(buf.Next(2), bigEndian)
 }
 
+// Read next 2 bytes as unsigned integer Little Endian
+// !!! This differe from original source which buffer pointer is not advenced (ie. doest not Read from Buffer)
 func (buf *Buffer) ReadUint16LE() uint16 {
-	return convertToUint16(buf.Bytes(), littleEndian)
+	return convertToUint16(buf.Next(2), littleEndian)
 }
 
+// Read next 4 bytes as unsigned integer Big Endian
+// !!! This differe from original source which buffer pointer is not advenced (ie. doest not Read from Buffer)
 func (buf *Buffer) ReadUint32BE() uint32 {
-	return convertToUint32(buf.Bytes(), bigEndian)
+	return convertToUint32(buf.Next(4), bigEndian)
 }
 
+// Read next 4 bytes as unsigned integer Little Endian
+// !!! This differe from original source which buffer pointer is not advenced (ie. doest not Read from Buffer)
 func (buf *Buffer) ReadUint32LE() uint32 {
-	return convertToUint32(buf.Bytes(), littleEndian)
+	return convertToUint32(buf.Next(4), littleEndian)
 }
 
 func convertToUint16(buf []byte, e Endian) uint16 {
@@ -74,6 +83,7 @@ func convertToUint16(buf []byte, e Endian) uint16 {
 		}
 	} else {
 		logger.Errorf("could not read uint16 %s from given buffer", e.toString())
+//debug.PrintStack()
 		return math.MaxUint16
 	}
 }
